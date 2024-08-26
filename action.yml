@@ -33,7 +33,7 @@ runs:
 
     - name: Notify job status
       if: always()
-      uses: ajilach/notifications-ghaction@v1.0.0
+      uses: ajilach/notifications-ghaction@v1.4.1
       with:
         op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
         slack_channel_id: "${{ inputs.slack_channel_id }}"
