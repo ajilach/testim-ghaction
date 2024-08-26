@@ -1,0 +1,40 @@
+name: 'End-to-end Testing'
+description: 'Execute testim test flows'
+inputs:
+  testim_test:
+    description: Name of Testim test flow label
+    required: true
+runs:
+  using: "composite"
+
+  steps:
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4.0.2
+      with:
+        node-version: 'lts/Hydrogen'
+        check-latest: true
+
+    - name: Load Testim Secrets
+      uses: 1password/load-secrets-action@v2.0.0
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        TESTIM_TOKEN: op://ajila_CICD/TESTIM/token
+        TESTIM_GRID_ID: op://ajila_CICD/TESTIM/grid_id
+        TESTIM_PROJECT: op://ajila_CICD/TESTIM/project
+      
+    - name: Install dependencies
+      shell: bash
+      run: npm install -g @testim/testim-cli
+
+    - name: Run Testim test
+      shell: bash
+      run: testim --token ${{ env.TESTIM_TOKEN }} --project ${{ env.TESTIM_PROJECT }} --grid ${{ env.TESTIM_GRID_ID }} --label "${{ inputs.testim_test }}"
+
+    - name: Notify job status
+      if: always()
+      uses: ajilach/notifications-ghaction@v1.0.0
+      with:
+        op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        slack_channel_id: "${{ inputs.slack_channel_id }}"
+        job_status: "${{ job.status }}"
