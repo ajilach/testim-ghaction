@@ -4,6 +4,9 @@ inputs:
   testim_test:
     description: Name of Testim test flow label
     required: true
+  op_service_account_token:
+    description: 1Password service account token
+    required: true
 runs:
   using: "composite"
 
@@ -18,7 +21,7 @@ runs:
     - name: Load Testim Secrets
       uses: 1password/load-secrets-action@v2.0.0
       env:
-        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op_service_account_token }}
         TESTIM_TOKEN: op://ajila_CICD/TESTIM/token
         TESTIM_GRID_ID: op://ajila_CICD/TESTIM/grid_id
         TESTIM_PROJECT: op://ajila_CICD/TESTIM/project
